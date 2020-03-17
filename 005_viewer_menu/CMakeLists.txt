@@ -3,24 +3,20 @@ cmake_minimum_required(VERSION 3.6)
 # Create Project
 get_filename_component(ProjectId ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 string(REPLACE " " "_" ProjectId ${ProjectId})
-# project(${ProjectId} CXX)
+# project(${ProjectId} CXX) # if set CXX, build is failed
 project(${ProjectId})
 message(${ProjectId})
 
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/W1>")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake) # modeuleパスにローカルのFindLIBIGL.cmakeも追加
-
-# cgal
-# find_package(CGAL)
 
 # libigl
 # option(LIBIGL_WITH_COMISO            "Use CoMiso"                   ON)
 # option(LIBIGL_WITH_EMBREE            "Use Embree"                   ON)
 option(LIBIGL_WITH_OPENGL            "Use OpenGL"                   ON)
 option(LIBIGL_WITH_OPENGL_GLFW       "Use GLFW"                     ON)
-# option(LIBIGL_WITH_OPENGL_GLFW_IMGUI "Use ImGui"                    ON)
+option(LIBIGL_WITH_OPENGL_GLFW_IMGUI "Use ImGui"                    ON)
 # option(LIBIGL_WITH_PNG               "Use PNG"                      ON)
 # option(LIBIGL_WITH_TETGEN            "Use Tetgen"                   ON)
 # option(LIBIGL_WITH_TRIANGLE          "Use Triangle"                 ON)
@@ -52,11 +48,10 @@ target_link_libraries(${PROJECT_NAME}
   # igl::embree
   igl::opengl
   igl::opengl_glfw
-  # igl::opengl_glfw_imgui
+  igl::opengl_glfw_imgui
   # igl::png
   # igl::tetgen
   # igl::triangle
   # igl::predicates
   # igl::xml
-  # CGAL::CGAL
 )

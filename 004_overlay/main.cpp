@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
   // Plot the edges of the bounding box
   for (unsigned i=0;i<E_box.rows(); ++i)
-    viewer.data().add_edges
+    viewer.data().add_edges // Pstart, Pend, rgb
     (
       V_box.row(E_box(i,0)),
       V_box.row(E_box(i,1)),

@@ -8,12 +8,9 @@ project(${ProjectId})
 message(${ProjectId})
 
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/W1>")
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/w>")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake) # modeuleパスにローカルのFindLIBIGL.cmakeも追加
-
-# cgal
-# find_package(CGAL)
 
 # libigl
 # option(LIBIGL_WITH_COMISO            "Use CoMiso"                   ON)
@@ -58,5 +55,4 @@ target_link_libraries(${PROJECT_NAME}
   # igl::triangle
   # igl::predicates
   # igl::xml
-  # CGAL::CGAL
 )
