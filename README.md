@@ -134,6 +134,8 @@ int main(int argc, char *argv[])
 - Boolean演算はCGALとの連携が必要
   - オプションにcgalをつけると自動でダウンロードしてくる(自分の環境ではダウンロードが失敗した)
   - find_packageで環境構築済みのCGALを見つけるようにしたらうまくいった
+- デフォルトのviewerの操作感はいまいち。オブジェクトをひっくり返すと回転方向が逆になってしまう
+  - VCGのtrackballの方が使いやすい
 
 
 
@@ -227,18 +229,21 @@ int main(int argc, char *argv[]){
 }
 ```
 
-- [表示するだけ](https://github.com/libigl/libigl/tree/master/tutorial/102_DrawMesh/main.cpp)
-- [キーイベント関数の登録](https://github.com/libigl/libigl/tree/master/tutorial/103_Events/main.cpp)
-- [色の表示](https://github.com/libigl/libigl/tree/master/tutorial/104_Colors/main.cpp)
-  - 頂点に対してRGBの色配列を指定(Open3dと似ている)
-- [頂点にラベルを表示](https://github.com/libigl/libigl/tree/master/tutorial/105_Overlays/main.cpp)
-- [描画画面内にGUI追加](https://github.com/libigl/libigl/tree/master/tutorial/106_ViewerMenu/main.cpp)
-  - GUI描画用のコールバック関数を登録する
-  - コールバック関数内で分岐処理させる
-- [複数データの読み込みと削除](https://github.com/libigl/libigl/tree/master/tutorial/107_MultipleMeshes/main.cpp)
-  - 複数データの読み込みにデフォルトで対応している。インデックスで管理
-- [複数視点からの表示を並べる](https://github.com/libigl/libigl/tree/master/tutorial/108_MultipleViews/main.cpp)
-  - 31個のマルチビューを作成できる
+### [表示するだけ](https://libigl.github.io/tutorial/#visualizing-surfaces)
+### [キーイベント関数の登録](https://libigl.github.io/tutorial/#interaction-with-keyboard-and-mouse)
+
+### [表示データの切り替え](https://libigl.github.io/tutorial/#interaction-with-keyboard-and-mouse)
+
+### [色の表示](https://libigl.github.io/tutorial/#scalar-field-visualization)
+- 頂点に対してRGBの色配列を指定(Open3dと似ている)
+### [頂点にラベルを表示](https://libigl.github.io/tutorial/#overlays)
+### [描画画面内にGUI追加](https://libigl.github.io/tutorial/#viewer-menu)
+- GUI描画用のコールバック関数を登録する
+- コールバック関数内で分岐処理させる
+### [複数データの読み込みと削除](https://libigl.github.io/tutorial/#multiple-meshes)
+- 複数データの読み込みにデフォルトで対応している。インデックスで管理
+### [複数視点からの表示を並べる](https://libigl.github.io/tutorial/#multiple-views)
+- 31個のマルチビューを作成できる
 
 ## Viewer Function Sample
 
@@ -299,6 +304,41 @@ igl::gaussian_curvature(V,F,K);
 ## [remesh_self_intersections](https://github.com/libigl/libigl/blob/master/include/igl/copyleft/cgal/remesh_self_intersections.h)
 
 メッシュの自己交差を解消する機能。tutorialは[ここ](https://libigl.github.io/tutorial/#generalized-winding-number)に記載あり。
+
+## [Picking](https://libigl.github.io/tutorial/#picking)
+
+## [Repair mesh intersection](https://github.com/libigl/libigl/blob/master/include/igl/copyleft/cgal/remesh_self_intersections.h)
+
+自己交差が起きているメッシュを分割して修正する
+
+CGALのリンクが必要
+
+```cpp
+#include <igl/readOFF.h>
+#include <igl/writeOFF.h>
+#include <igl/copyleft/cgal/remesh_self_intersections.h>
+#include <igl/remove_unreferenced.h>
+
+Eigen::MatrixXd V,VV,SV;
+Eigen::MatrixXi F,FF,SF;
+Eigen::MatrixXi IF,J,IM,UIM;
+
+int main(int argc, char *argv[]){
+	igl::readOFF("./intersect.off", V, F);
+	// resolve intersections
+	igl::copyleft::cgal::RemeshSelfIntersectionsParam params;
+	igl::copyleft::cgal::remesh_self_intersections(V,F,params,VV,FF,IF,J,IM);
+	// _apply_ duplicate vertex mapping IM to FF
+	std::for_each(FF.data(),FF.data()+FF.size(),[&](int & a){a=IM(a);});
+	// remove any vertices now unreferenced after duplicate mapping.
+	igl::remove_unreferenced(VV,FF,SV,SF,UIM);
+	
+	igl::writeOFF("./intersect_out.off", VV,FF);
+	igl::writeOFF("./intersect_out2.off", SV,SF);
+}
+```
+
+
 
 # Eigen Usage
 
